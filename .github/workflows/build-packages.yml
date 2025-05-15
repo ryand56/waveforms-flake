@@ -5,7 +5,7 @@ on: push
 
 jobs:
   build-libraries:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
@@ -13,7 +13,7 @@ jobs:
           - adept2-runtime
         nixpkgs_branch:
           - nixos-unstable
-          - nixos-21.11
+          - nixos-24.11
         system:
           - x86_64-linux
           # - aarch64-linux
@@ -26,11 +26,6 @@ jobs:
         with:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-      - uses: cachix/cachix-action@v16
-        with:
-          name: liff
-          signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - name: Build package ${{ matrix.pkg }}
         run: |-
           nix -L build \
@@ -39,7 +34,7 @@ jobs:
               .#${{ matrix.pkg }}
 
   build-applications:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: build-libraries
 
     strategy:
@@ -48,7 +43,7 @@ jobs:
           - waveforms
         nixpkgs_branch:
           - nixos-unstable
-          - nixos-21.11
+          - nixos-24.11
         system:
           - x86_64-linux
           # - aarch64-linux
@@ -61,11 +56,6 @@ jobs:
         with:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-      - uses: cachix/cachix-action@v16
-        with:
-          name: liff
-          signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - name: Build package ${{ matrix.pkg }}
         run: |-
           nix -L build \
